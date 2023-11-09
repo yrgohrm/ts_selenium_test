@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Duration;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -16,28 +15,19 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import se.yrgo.pos.CoursesPage;
 import se.yrgo.pos.StartPage;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest {
+class AppTest {
     WebDriver driver;
-
-    @BeforeAll
-    static void setupClass() {
-        // Which driver do you want to use?
-        
-        WebDriverManager.chromedriver().setup();
-        // WebDriverManager.edgedriver().setup();
-        // WebDriverManager.firefoxdriver().setup();
-    }
 
     @BeforeEach
     void setupTest() {
         // Which driver do you want to use?
+        // Selenium Manager will find and download the correct one for you
 
         driver = new ChromeDriver();
         // driver = new EdgeDriver();
