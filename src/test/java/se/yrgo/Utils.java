@@ -15,7 +15,7 @@ public final class Utils {
     public static StartPage openStartPage(WebDriver driver) {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.manage().window().maximize();
-        driver.get("https://yrgo.se");
+        driver.get("https://laromedel.nu/selenium");
         return new StartPage(driver);
     }
 

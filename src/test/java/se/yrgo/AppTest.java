@@ -1,22 +1,15 @@
 package se.yrgo;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.time.Duration;
-import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementClickInterceptedException;
-import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import se.yrgo.pos.CoursesPage;
-import se.yrgo.pos.StartPage;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.*;
+
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.support.ui.*;
+
+import se.yrgo.pos.*;
 
 /**
  * Unit test for simple App.
@@ -54,20 +47,25 @@ class AppTest {
     void educationNavigationSimple() {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
-        driver.get("https://yrgo.se");
+        driver.get("https://laromedel.nu/selenium");
 
-        WebElement edLink = driver.findElement(By.linkText("Till utbildningarna"));
+        WebElement edLink = driver.findElement(By.linkText("Products"));
         edLink.click();
 
-        Select edSelect = new Select(driver.findElement(By.className("select")));
-        edSelect.selectByVisibleText("IT och teknik");
+        Select edSelect = new Select(driver.findElement(By.id("unit")));
+        edSelect.selectByVisibleText("Security");
 
-        List<WebElement> h3s = driver.findElements(By.tagName("h3"));
-        assertTrue(h3s.stream().map(WebElement::getText)
-                .anyMatch(txt -> txt.contains("Java Enterprise Utvecklare")));
+        WebElement input = driver.findElement(By.id("query"));
+        input.sendKeys("vulnerabilities");
 
-        assertFalse(h3s.stream().map(WebElement::getText)
-                .anyMatch(str -> str.contains("Apotekstekniker")));
+        WebElement submit = driver.findElement(By.id("search"));
+        submit.click();
+
+        WebElement link = driver.findElement(By.linkText("SQL Injection - OWASP"));
+        assertNotNull(link);
+
+        WebElement resultsElement = driver.findElement(By.id("results"));
+        assertFalse(resultsElement.getText().contains("business opportunity"));
     }
 
     /**
@@ -80,34 +78,42 @@ class AppTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.manage().window().maximize();
 
-        driver.get("https://yrgo.se");
+        driver.get("https://laromedel.nu/selenium");
 
-        final WebElement edLink = driver.findElement(By.linkText("Till utbildningarna"));
+        final WebElement edLink = driver.findElement(By.linkText("Products"));
 
         var wait = new WebDriverWait(driver, Duration.ofSeconds(5))
                     .ignoring(ElementClickInterceptedException.class);
 
-        wait.until(driver -> {
+        wait.until(d -> {
             edLink.click();
             return edLink;
         });
 
-        var selectElement = driver.findElement(By.className("select"));
+        var selectElement = driver.findElement(By.id("unit"));
         Select edSelect = new Select(selectElement);
 
         wait = wait.ignoring(ElementNotInteractableException.class);
 
-        wait.until(driver -> {
-            edSelect.selectByVisibleText("IT och teknik");
+        wait.until(d -> {
+            edSelect.selectByVisibleText("Security");
             return edSelect;
         });
 
-        List<WebElement> h3s = driver.findElements(By.tagName("h3"));
-        assertTrue(h3s.stream().map(WebElement::getText)
-                .anyMatch(str -> str.contains("Java Enterprise Utvecklare")));
+        WebElement input = driver.findElement(By.id("query"));
+        input.sendKeys("vulnerabilities");
 
-        assertFalse(h3s.stream().map(WebElement::getText)
-                .anyMatch(str -> str.contains("Apotekstekniker")));
+        WebElement submit = driver.findElement(By.id("search"));
+        wait.until(d -> {
+            submit.click();
+            return edLink;
+        });
+
+        WebElement link = driver.findElement(By.linkText("SQL Injection - OWASP"));
+        assertNotNull(link);
+
+        WebElement resultsElement = driver.findElement(By.id("results"));
+        assertFalse(resultsElement.getText().contains("business opportunity"));
     }
 
     /**
@@ -120,24 +126,29 @@ class AppTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.manage().window().maximize();
 
-        driver.get("https://yrgo.se");
+        driver.get("https://laromedel.nu/selenium");
         
         final var wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-        final var edLink = Utils.find(driver, By.linkText("Till utbildningarna"));
+        final var edLink = Utils.find(driver, By.linkText("Products"));
 
         wait.until(CustomConditions.elementHasBeenClicked(edLink));
 
-        Select edSelect = Utils.findSelect(driver, By.className("select"));
+        Select edSelect = Utils.findSelect(driver, By.id("unit"));
 
-        wait.until(CustomConditions.visibleTextHasBeenSelected(edSelect, "IT och teknik"));
+        wait.until(CustomConditions.visibleTextHasBeenSelected(edSelect, "Security"));
 
-        List<WebElement> h3s = driver.findElements(By.tagName("h3"));
-        assertTrue(h3s.stream().map(WebElement::getText)
-                .anyMatch(str -> str.contains("Java Enterprise Utvecklare")));
+        WebElement input = driver.findElement(By.id("query"));
+        input.sendKeys("vulnerabilities");
 
-        assertFalse(h3s.stream().map(WebElement::getText)
-                .anyMatch(str -> str.contains("Apotekstekniker")));
+        WebElement submit = driver.findElement(By.id("search"));
+        wait.until(CustomConditions.elementHasBeenClicked(submit));
+
+        WebElement link = driver.findElement(By.linkText("SQL Injection - OWASP"));
+        assertNotNull(link);
+
+        WebElement resultsElement = driver.findElement(By.id("results"));
+        assertFalse(resultsElement.getText().contains("business opportunity"));
     }
 
     /**
@@ -148,11 +159,10 @@ class AppTest {
     @Test
     void educationNavigationPageObjects() {      
         StartPage startPage = Utils.openStartPage(driver);
-        CoursesPage coursesPage = startPage.navigateToCourses();
-        coursesPage.selectSection("IT och teknik");
-
-        var courseNames = coursesPage.getCourseNames();
-        assertTrue(courseNames.contains("Java Enterprise Utvecklare"));
-        assertFalse(courseNames.contains("Apotekstekniker"));
+        ProductsPage productPage = startPage.navigateToProducts();
+        productPage.query("Security", "vunerabilities");
+        
+        assertNotNull(productPage.findLink("SQL Injection - OWASP"));
+        assertFalse(productPage.getResultElement().getText().contains("business opportunity"));
     }
 }
