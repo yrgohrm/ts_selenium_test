@@ -37,7 +37,7 @@ public class ProductsPage {
         return driver.findElement(By.id("results"));
     }
 
-    public List<WebElement> findLink(String linkText) {
+    public List<WebElement> findLinkInResults(String linkText) {
         final var wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement results = getResultElement();
         return wait.until(d -> results.findElements(By.linkText(linkText)));

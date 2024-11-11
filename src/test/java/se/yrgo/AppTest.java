@@ -44,7 +44,7 @@ class AppTest {
      * 
      */
     @Test
-    void educationNavigationSimple() {
+    void productQueryNavigationSimple() {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
         driver.get("https://laromedel.nu/selenium");
@@ -74,7 +74,7 @@ class AppTest {
      * 
      */
     @Test
-    void educationNavigation() {
+    void productQueryNavigation() {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.manage().window().maximize();
 
@@ -122,7 +122,7 @@ class AppTest {
      * 
      */
     @Test
-    void educationNavigationSomewhatGoodLooking() {
+    void productQueryNavigationSomewhatGoodLooking() {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.manage().window().maximize();
 
@@ -157,12 +157,12 @@ class AppTest {
      * 
      */
     @Test
-    void educationNavigationPageObjects() {      
+    void productQueryNavigationPageObjects() {      
         StartPage startPage = Utils.openStartPage(driver);
         ProductsPage productPage = startPage.navigateToProducts();
         productPage.query("Security", "vunerabilities");
         
-        assertNotNull(productPage.findLink("SQL Injection - OWASP"));
+        assertNotNull(productPage.findLinkInResults("SQL Injection - OWASP"));
         assertFalse(productPage.getResultElement().getText().contains("business opportunity"));
     }
 }
